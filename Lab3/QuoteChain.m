@@ -41,7 +41,11 @@
                                  @"quote":@"Learning without thought is labor lost; thought without learning is perilous.",
                                  @"author":@"Confucius"
                                  };
-        _QuoteChain = [[NSMutableArray alloc] initWithObjects:quote1,quote2,quote3,quote4,quote5, nil];
+        NSDictionary* quoteTest = @{
+                                 @"quote":@"Test Quote 1",
+                                 @"author":@"Please Ignore"
+                                 };
+        _QuoteChain = [[NSMutableArray alloc] initWithObjects:quote1,quote2,quote3,quote4,quote5, quoteTest,nil];
         self.lookingAtIndex = 0;
     }
     return self;
@@ -72,18 +76,20 @@
 }
 - (void) insertQuote: (NSString *) quote author: (NSString *) author atIndex: (NSUInteger) index{
     NSDictionary* newQuote = @{
-                               quote:author
+                               @"quote":quote,
+                               @"author":author
                                };
-    if ( index < self.QuoteChain.count) {
+    if(index <= self.QuoteChain.count)
         [self.QuoteChain insertObject:newQuote atIndex:index];
-    }
 }
+
 - (void) insertQuote: (NSDictionary *) quote
              atIndex: (NSUInteger) index{
-    [self.QuoteChain insertObject:quote atIndex:index];
+    if(index <= self.QuoteChain.count)
+        [self.QuoteChain insertObject:quote atIndex:index];
 }
 - (NSDictionary *) nextQuote{
-    if (self.lookingAtIndex >= self.QuoteChain.count - 1) {
+    if (self.lookingAtIndex >= self.QuoteChain.count - 2) {
         self.lookingAtIndex = 0;
     }
     else{
@@ -93,7 +99,7 @@
 }
 - (NSDictionary *) prevQuote{
     if (self.lookingAtIndex <= 0) {
-        self.lookingAtIndex = self.QuoteChain.count-1;
+        self.lookingAtIndex = self.QuoteChain.count-2;
     }
     else{
         self.lookingAtIndex--;

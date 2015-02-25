@@ -36,17 +36,81 @@
     [self.view addGestureRecognizer:swipeLeft];
     [self.view addGestureRecognizer:swipeRight];
     
-    [self showQuote:[self.quoteChain quoteAtIndex:0] ];
+    [self setQuote:[self.quoteChain quoteAtIndex:0] ];
+    
+    [self testQuoteChain];
 }
+
+-(void) testQuoteChain{
+
+    NSDictionary* savior = [self.quoteChain quoteAtIndex:5];
+    NSLog( [NSString stringWithFormat:@"Initial size: %d",[self.quoteChain numberOfQuotes]]);
+    NSLog([savior valueForKey:@"quote"]);
+    NSLog([savior valueForKey:@"author"]);
+ 
+    [self.quoteChain removeQuoteAtIndex:5];
+    NSLog( [NSString stringWithFormat:@"Size after Remove: %d",[self.quoteChain numberOfQuotes]]);
+    
+    [self.quoteChain insertQuote:@"Test Quote 2" author:@"Please Ignore Again" atIndex:5];
+    NSDictionary* wavior = [self.quoteChain quoteAtIndex:5];
+    NSLog( [NSString stringWithFormat:@"Size after insert: %d",[self.quoteChain numberOfQuotes]]);
+    NSLog([wavior valueForKey:@"quote"]);
+    NSLog([wavior valueForKey:@"author"]);
+    
+    [self.quoteChain removeQuoteAtIndex:5];
+    NSLog( [NSString stringWithFormat:@"Size after Remove: %d",[self.quoteChain numberOfQuotes]]);
+    
+    [self.quoteChain insertQuote:savior atIndex:5];
+    NSLog( [NSString stringWithFormat:@"Size after last insert: %d",[self.quoteChain numberOfQuotes]]);
+    wavior = [self.quoteChain quoteAtIndex:5];
+    NSLog([wavior valueForKey:@"quote"]);
+    NSLog([wavior valueForKey:@"author"]);
+    /*
+    //
+    
+    [self.quoteChain insertQuote:@"Test Quote" author:@"Please Ignore" atIndex:5];
+    poser = [self.quoteChain quoteAtIndex:5];
+    NSLog([poser valueForKey:@"quote"]);
+    NSLog(@"adasdsds");
+    
+    */
+}
+
 - (void)singleTap{
     NSLog(@"Single Tap");
     
     [self showQuote:[self.quoteChain randomQuote]];
 }
 
-- (void)showQuote:(NSDictionary*) quote{
+-(void)setQuote:(NSDictionary*) quote{
     self.quoteSpace.text = [quote valueForKey:@"quote"];
-    self.authorSpace.text = [quote valueForKey:@"author"];
+    self.authorSpace.text = [NSString stringWithFormat:@"%@%@",@"~",[quote valueForKey:@"author"]];
+    self.quoteSpace.textColor = [UIColor blackColor];
+    self.quoteSpace.alpha = 1;
+}
+- (void)showQuote:(NSDictionary*) quote{
+    
+    
+    [UIView animateWithDuration:1.0 animations:^{
+        self.quoteSpace.alpha = 0;
+    } completion:^(BOOL finished) {
+        
+        self.quoteSpace.text = [quote valueForKey:@"quote"];
+        self.authorSpace.text = [NSString stringWithFormat:@"%@%@",@"~",[quote valueForKey:@"author"]];
+        self.quoteSpace.textColor = (self.quoteSpace.textColor == [UIColor blackColor])?[UIColor whiteColor] : [UIColor blackColor] ;
+        [UIView animateWithDuration:1.5 animations:^{
+            self.quoteSpace.alpha = 1;
+        } completion:^(BOOL finished) {
+           
+        }];
+    }];
+    
+    
+   /* [UIView animateWithDuration:1.0 animations:^{
+        self.quoteSpace.alpha = 1;
+    } completion:^(BOOL finished) {
+        NSLog(@"animated");
+    }];*/
 }
 - (void)swipeLeftDetected{
     NSLog(@"Swipe Left");
